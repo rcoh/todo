@@ -1,0 +1,23 @@
+<html>
+	<head>
+	  <!-- React JS -->
+	  <script src="http://fb.me/react-0.10.0.min.js"></script>
+	  <script src="http://fb.me/JSXTransformer-0.10.0.js"></script>
+	  <script src="underscore-min.js"></script>
+	  <!-- Firebase JS -->
+	  <script src="https://cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
+	  <script type="text/jsx" src="todo.js"></script>
+	</head>
+
+	<body>
+		<div id="container"></div>
+	</body>
+
+<script type="text/jsx">
+/** @jsx React.DOM */
+React.renderComponent(
+    <NotesPane />,
+    document.getElementById('container')
+);
+</script>
+</html>
