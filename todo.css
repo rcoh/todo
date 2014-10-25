@@ -1,0 +1,13 @@
+.notes-pane {
+	float: left;
+	width: 50%;
+}
+
+.todo-pane {
+	float: right;
+	width: 50%;
+}
+
+.todo-done {
+	text-decoration: line-through;
+}
