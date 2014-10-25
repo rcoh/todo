@@ -7,6 +7,8 @@
 	  <!-- Firebase JS -->
 	  <script src="https://cdn.firebase.com/js/client/1.0.17/firebase.js"></script>
 	  <script type="text/jsx" src="todo.js"></script>
+
+	  <link href="todo.css" rel="stylesheet">
 	</head>
 
 	<body>
@@ -17,7 +19,7 @@
 /** @jsx React.DOM */
 var firebasePointer = new Firebase("https://glaring-fire-654.firebaseio.com/");
 React.renderComponent(
-    <NotesPane firebasePointer={firebasePointer}/>,
+    <App firebasePointer={firebasePointer}/>,
     document.getElementById('container')
 );
 </script>
