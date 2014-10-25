@@ -1,18 +1,32 @@
 /** @jsx React.DOM */
-var NotesPane = React.createClass({
-	getInitialState: function() {
-		return {notes: {}};
+
+var FireStateMixin = {
+	propTypes: {
+		firebasePointer: React.PropTypes.object.isRequired
 	},
 
-	componentWillMount: function() {
-		this.firebase = new Firebase("https://glaring-fire-654.firebaseio.com/");
-		var self = this;
-		this.firebase.child("notes").on("value", function(snapshot) {
-			self.setState({notes: snapshot.val()});
-			console.log("updating");
-			console.log(self.state.notes);
-		});
-		//this.firebase.set({notes: {"note1": "hello!"}});
+    componentDidMount: function() {
+    	var self = this;
+    	this.props.firebasePointer.on("value", function(snapshot) {
+    		if (self.isMounted()) {
+    			self.setState(snapshot.val());
+    		}
+    	});
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+		this.props.firebasePointer.set(this.state);
+	},
+}
+
+var NotesPane = React.createClass({
+
+	mixins: [FireStateMixin],
+	getInitialState: function() {
+		return {
+			notes: {},
+			selectedNote: null
+		};
 	},
 
 	addNote: function(name) {
@@ -20,44 +34,52 @@ var NotesPane = React.createClass({
 		var id = Math.random().toString(36).substring(7);
 		this.state.notes[id] = {name: name, text: ""};
 		this.setState({notes: this.state.notes});
-		this.firebase.child("notes").set(this.state.notes);
+	},
+
+	selectNote: function(noteId) {
+		var self = this;
+		return function() {
+			console.log("clicked");
+			self.setState({selectedNote: noteId});
+		};
 	},
 
 	render: function() {
-		var notes = _.map(this.state.notes, function(text, noteId) {
-			console.log("IDID:", noteId);
-			return <Note key={noteId} noteId={noteId} />;
+		var self = this;
+		
+		var notes = _.map(this.state.notes, function(note, noteId) {
+			if (noteId == self.state.selectedNote) {
+				return <p key={"point-" + noteId}>{noteId} (selected)</p>;
+			} else {
+				return <p key={"point-" + noteId} onClick={self.selectNote(noteId)}>{noteId}</p>;
+			}
 		});
+		
+		var noteId = this.state.selectedNote;
+		var selectedNote = noteId != null ? <Note key={noteId} noteId={noteId} 
+			firebasePointer={this.props.firebasePointer.child("notes/" + noteId)} /> : <div></div>;
+		
 
-		return <div><button onClick={this.addNote}>Add Note</button>
-				<div>{notes}</div>
-			   </div>
+		return <div>
+					<button onClick={this.addNote}>Add Note</button>
+					<div>{notes}</div>
+					{selectedNote}
+			   </div>;
 	}
 });
 
 var Note = React.createClass({
+	mixins: [FireStateMixin],
 	propTypes: {
-		noteId: React.PropTypes.number.isRequired,
+		noteId: React.PropTypes.string.isRequired
 	},
 
-	componentWillMount: function() {
-		console.log("mounting");
-		this.firebase = new Firebase("https://glaring-fire-654.firebaseio.com/");
-		var self = this;
-		this.firebase.child("notes/" + this.props.noteId).on("value", function(snapshot) {
-			self.setState(snapshot.val());
-			console.log("note updating with nodeId:", self.props.noteId, self.state);
-			//console.log(self.state)
-		});
-	},
-
-	componentDidUpdate: function(prevProps, prevState) {
-		this.firebase.child("notes/" + this.props.noteId).set(this.state);
+	getInitialState: function() {
+		return {name: "Loading...", text: "Loading..." };
 	},
 
 	onTextUpdate: function(event) {
 		this.setState({text: event.target.value});
-		console.log("text update:", event.target.value, this.state.text);
 	},
 
 	render: function() {
