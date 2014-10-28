@@ -3,6 +3,15 @@
 	width: 50%;
 }
 
+.notes-list {
+	width: 30%;
+	float: left;
+}
+
+.note-edit {
+	/*float: right;*/
+}
+
 .todo-pane {
 	float: right;
 	width: 50%;
