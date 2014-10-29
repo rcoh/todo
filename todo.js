@@ -87,17 +87,36 @@ var FireStateMixin = {
 
 var App = React.createClass({
 	//mixins: [FireStateMixin],
+	componentDidMount: function() {
+		
+	},
+
+	getInitialState: function() { 
+		return {
+			isLoggedIn: this.props.firebasePointer.getAuth()
+			// TODO: separate react component for login
+		}
+	},
+
+	onLogin: function(authInfo) {
+		this.setState({isLoggedIn: true});
+	},
+
 	render: function() {
-		return <div className="container-fluid toplevel">
-			<div className="row">
-				<div className="notes-pane col-md-6">
-					<NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
-				</div> 
-				<div className="todo-pane col-md-6">
-					<TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
+		if (this.state.isLoggedIn) {
+			return <div className="container-fluid toplevel">
+				<div className="row">
+					<div className="notes-pane col-md-6">
+						<NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
+					</div> 
+					<div className="todo-pane col-md-6">
+						<TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
+					</div>
 				</div>
-			</div>
-		</div>;
+			</div>;
+		} else {
+			return <Login firebasePointer={this.props.firebasePointer} onLogin={this.onLogin} />
+		}
 	}
 });
 
