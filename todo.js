@@ -25,12 +25,17 @@ var FireStateMixin = {
     			console.log("updating version: ", snapshotVersion);
     			self.version = snapshotVersion;
     			self.needsPersist = false;
-    			
-    			self.replaceState(self.ensureAllValuesPresent(snapshotVal));
+    			self.setState(snapshotVal);
+    			if (snapshotVal == null) {
+    				var publics = publicVals(this.state);
+    				console.warn("snapshut is null, what should I do?", publics);
+    			}
+    			//self.replaceState(self.ensureAllValuesPresent(snapshotVal));
     		}
     	});
     },
 
+    // DEAD CODE
     ensureAllValuesPresent: function(stateSnapshot) {
     	var privates = this.privateVals(this.state);
     	var withInitial = React.addons.update(this.getInitialState(), {$merge: stateSnapshot});
@@ -107,6 +112,7 @@ var App = React.createClass({
 	},
 
 	render: function() {
+		return <AceEditor startingText="startstart"/>;
 		if (this.state.isLoggedIn) {
 			return <div className="container-fluid toplevel">
 				<div className="row">

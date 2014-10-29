@@ -17,6 +17,11 @@
 	width: 50%;*/
 }
 
+.editor {
+	width: 500px;
+	height: 500px;
+}
+
 .todo-done {
 	text-decoration: line-through;
 }
