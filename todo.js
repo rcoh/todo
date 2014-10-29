@@ -121,7 +121,7 @@ var TodoPane = React.createClass({
 		var self = this;
 		return function() {
 			var indexUpdate = {}
-			indexUpdate[index] = {done: {$set: true}};
+			indexUpdate[index] = {done: {$apply: function(v) { return !v; }}};
 			var newState = React.addons.update(self.state, {todos: indexUpdate});
 			console.log(newState);
 			self.setState(newState);
@@ -144,8 +144,9 @@ var TodoPane = React.createClass({
 		var self = this;
 		var todoDivs = this.state.todos.map(function(todo, index) {
 			var className = todo.done ? "todo-done" : "";
+			var doneText = todo.done ? "Undone" : "Done";
 			return <div key={index} className={className}>{todo.text}&nbsp;|&nbsp;
-				<span onClick={self.crossOff(index)}>Done</span>&nbsp;|&nbsp;<span onClick={self.remove(index)}>Remove</span>
+				<span onClick={self.crossOff(index)}>{doneText}</span>&nbsp;|&nbsp;<span onClick={self.remove(index)}>Remove</span>
 			</div>;
 		});
 		return <div>
