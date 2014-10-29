@@ -15,6 +15,10 @@ var FireStateMixin = {
     	var self = this;
     	this.props.firebasePointer.on("value", function(snapshot) {
     		var snapshotVal = snapshot.val();
+    		if (snapshotVal == null) {
+    			console.warn("Null version: ", self);
+    			return
+    		}
     		var snapshotVersion = snapshotVal.version;
     		delete snapshotVal.version;
     		if (self.isMounted() && snapshotVersion > self.version) {
@@ -213,6 +217,13 @@ var NotesPane = React.createClass({
 		this.incrementVersion();
 	},
 
+	deleteNote: function() {
+		var index = this.state._selectedNote;
+		this.setState({_selectedNote: null});
+		this.props.firebasePointer.child("notes").child(index).update({"deleted": true});
+		this.incrementVersion();
+	},
+
 	selectNote: function(noteId) {
 		var self = this;
 		return function() {
@@ -227,17 +238,24 @@ var NotesPane = React.createClass({
 
 	render: function() {
 		var self = this;
+		var nonDeletedNotes = _.pick(this.state.notes, function(note, noteId) {
+			return !note.deleted;
+		});
 		
-		var notes = _.map(this.state.notes, function(note, noteId) {
-			
+		//debugger;
+		var notes = _.map(nonDeletedNotes, function(note, noteId) {
 			if (noteId == self.state._selectedNote) {
-				return <div key={"point-" + noteId} className="note-selected note-item">{note.name}</div>;
+				return <div key={"row" + noteId} className="row note-item note-selected">
+					<div key={"point-" + noteId} className="col-md-8">{note.name}</div>
+					<div className="note-delete col-md-4 clickable" onClick={self.deleteNote}>Delete</div>
+				</div>;
 			} else {
 				return <div key={"point-" + noteId} className="note-unselected note-item" onClick={self.selectNote(noteId)}>{note.name}</div>;
 			}
 		});
 		
 		var noteId = this.state._selectedNote;
+		console.log("noteid: ", noteId);
 		var selectedNote = noteId != null ? <NoteEditor key={noteId} noteId={noteId} 
 			firebasePointer={this.props.firebasePointer.child("notes/" + noteId)} /> : <div></div>;
 	

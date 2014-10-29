@@ -53,6 +53,11 @@
 	height: 34px;
 }
 
+.note-delete {
+	color: red;
+	float: right;
+}
+
 .todo-input {
 	width: 100px;
 	height: 34px;
