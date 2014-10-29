@@ -38,11 +38,22 @@
 
 .add-button {
 	margin-left: 5px;
-	margin-top -2px; /*wtf*/
+	margin-top: -3px; /* wtf, needed to make it line up with the input */
+}
+
+.clickable {
+	cursor: pointer;
+}
+.clickable:hover {
+	color: blue;
 }
 
 .note-title {
-	/*margin: 5px;*/
+	width: 100px;
+	height: 34px;
+}
+
+.todo-input {
 	width: 100px;
 	height: 34px;
 }

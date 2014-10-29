@@ -151,14 +151,17 @@ var TodoPane = React.createClass({
 		var todoDivs = this.state.todos.map(function(todo, index) {
 			var className = todo.done ? "todo-done" : "";
 			var doneText = todo.done ? "Undone" : "Done";
-			return <div key={index} className={className}>{todo.text}&nbsp;|&nbsp;
-				<span onClick={self.crossOff(index)}>{doneText}</span>&nbsp;|&nbsp;<span onClick={self.remove(index)}>Remove</span>
+			return <div className="row">
+				<div key={index} className={className}>
+					<div className="col-md-1 clickable" onClick={self.crossOff(index)}>{doneText}</div>
+					<div className={className + " col-md-7"}>{todo.text}</div>
+					<div className="col-md-1 clickable" onClick={self.remove(index)}>Remove</div>
+				</div>
 			</div>;
 		});
 		return <div>
-			Todo: 
-			<input type="text" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
-			<button onClick={this.addTodo}>Add Todo</button>
+			<input type="text" className="todo-input" placeholder="Todo?" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
+			<button onClick={this.addTodo} className="add-button btn btn-success">Add</button>
 			<div>
 				{todoDivs}
 			</div>
