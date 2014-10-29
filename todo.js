@@ -88,12 +88,14 @@ var FireStateMixin = {
 var App = React.createClass({
 	//mixins: [FireStateMixin],
 	render: function() {
-		return <div>
-			<div className="notes-pane">
-				<NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
-			</div> 
-			<div className="todo-pane">
-				<TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
+		return <div className="container-fluid toplevel">
+			<div className="row">
+				<div className="notes-pane col-md-6">
+					<NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
+				</div> 
+				<div className="todo-pane col-md-6">
+					<TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
+				</div>
 			</div>
 		</div>;
 	}
@@ -142,8 +144,8 @@ var TodoPane = React.createClass({
 		var self = this;
 		var todoDivs = this.state.todos.map(function(todo, index) {
 			var className = todo.done ? "todo-done" : "";
-			return <div key={index} className={className}>{todo.text} ({index}) 
-				| <span onClick={self.crossOff(index)}>Done</span> | <span onClick={self.remove(index)}>Remove</span>
+			return <div key={index} className={className}>{todo.text}&nbsp;|&nbsp;
+				<span onClick={self.crossOff(index)}>Done</span>&nbsp;|&nbsp;<span onClick={self.remove(index)}>Remove</span>
 			</div>;
 		});
 		return <div>
@@ -200,9 +202,9 @@ var NotesPane = React.createClass({
 		var notes = _.map(this.state.notes, function(note, noteId) {
 			
 			if (noteId == self.state._selectedNote) {
-				return <div key={"point-" + noteId}>{note.name} (selected)</div>;
+				return <div key={"point-" + noteId} className="note-selected note-item">{note.name}</div>;
 			} else {
-				return <div key={"point-" + noteId} onClick={self.selectNote(noteId)}>{note.name}</div>;
+				return <div key={"point-" + noteId} className="note-unselected note-item" onClick={self.selectNote(noteId)}>{note.name}</div>;
 			}
 		});
 		
@@ -211,13 +213,13 @@ var NotesPane = React.createClass({
 			firebasePointer={this.props.firebasePointer.child("notes/" + noteId)} /> : <div></div>;
 	
 
-		return <div>
-					<div className="notes-list">
-						<button onClick={this.addNote}>Add Note</button>
-						<input type="text" value={this.state._title} onChange={this.titleChange} />
+		return <div className="row">
+					<div className="notes-list col-md-4">
+						<input type="text" placeholder="Title" className="note-title" value={this.state._title} onChange={this.titleChange} />
+						<button className="btn btn-success add-button" onClick={this.addNote}>Add</button>
 						{notes}
 					</div>
-					<div className="note-edit">
+					<div className="note-edit col-md-8">
 						{selectedNote}
 					</div>
 			   </div>;
@@ -243,7 +245,7 @@ var NoteEditor = React.createClass({
 			<div>
 			Note Name: {this.state.name}
 			</div>
-			<textarea rows="4" cols="30" onChange={this.onTextUpdate} value={this.state.text}>
+			<textarea className="editor-textarea" onChange={this.onTextUpdate} value={this.state.text}>
 		
 			</textarea>		
 		</div>;

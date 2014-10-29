@@ -1,22 +1,57 @@
 .notes-pane {
-	float: left;
-	width: 50%;
+	/*padding: 20px;*/
 }
 
 .notes-list {
-	width: 30%;
-	float: left;
+	border-right-width: 1px;
+	border-right-color: black;
 }
 
 .note-edit {
-	/*float: right;*/
+	float: left;
+	/*margin-left: 25px;*/
 }
 
 .todo-pane {
-	float: right;
-	width: 50%;
+	/*float: right;
+	width: 50%;*/
 }
 
 .todo-done {
 	text-decoration: line-through;
+}
+
+.note-item {
+	padding: 5px;
+    cursor: pointer;
+}
+
+.note-selected {
+	color: blue;
+	background-color: #EFEFEF;
+	border-radius: 5px;
+}
+
+.note-unselected:hover {
+	color: blue;
+}
+
+.add-button {
+	margin-left: 5px;
+	margin-top -2px; /*wtf*/
+}
+
+.note-title {
+	/*margin: 5px;*/
+	width: 100px;
+	height: 34px;
+}
+
+.editor-textarea {
+	width: 100%;
+	height: 300px;
+}
+
+.toplevel {
+	padding: 10px;
 }
