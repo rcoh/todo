@@ -139,6 +139,12 @@ var TodoPane = React.createClass({
 		};
 	},
 
+	handleKeyDown: function(e) {
+		if (e.key === 'Enter') {
+    		this.addTodo();
+    	}
+	},
+
 	render: function() {
 		//console.log("rendering todo.", this.state.todos.length);
 		var self = this;
@@ -151,7 +157,7 @@ var TodoPane = React.createClass({
 		});
 		return <div>
 			Todo: 
-			<input type="text" value={this.state._todo} onChange={this.todoChange} />
+			<input type="text" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
 			<button onClick={this.addTodo}>Add Todo</button>
 			<div>
 				{todoDivs}
