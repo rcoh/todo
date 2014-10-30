@@ -2,7 +2,9 @@
 var AceEditor = React.createClass({
 	propTypes: {
 		onChange: React.PropTypes.func,
-		startingText: React.PropTypes.string
+		startingText: React.PropTypes.string,
+		fullScreen: React.PropTypes.bool.isRequired,
+		exitFullScreen: React.PropTypes.func
 	},
 
 	getInitialState: function() {
@@ -19,16 +21,28 @@ var AceEditor = React.createClass({
 		} else {
 			this.loading = false;
 		}
+
+		if (newProps.fullScreen && this.props.fullScreen == false) {
+			this.refs.editor.getDOMNode().className = "editor-fullscreen ace_editor ace-tm";
+			this.editor.resize();
+			this.editor.focus();
+			//this.editor.container.webkitRequestFullscreen();
+		}
 	},
 
-	render: function() {
-		return <div className="editor" ref="editor"></div>;
+	keyDown: function() {
+		console.log("key");
+	},
+
+	render: function() {	
+		return <div key="editoreditor" className="editor" ref="editor" onKeyDown={this.keyDown}></div>;
 	},
 
 	componentDidMount: function() {
 		var editorNode = this.refs.editor.getDOMNode();
 		var editor = ace.edit(editorNode);
 		editor.renderer.setShowGutter(false);
+		editor.focus();
 		this.editor = editor;
 		var self = this;
 		editor.getSession().on('change', function(e) {
@@ -39,10 +53,20 @@ var AceEditor = React.createClass({
 				} else if (text == self.writtenText) {
 					self.loading = false;
 				} else {
-					console.log(self.loading, self.writtenText, text);
+					//console.log(self.loading, self.writtenText, text);
 				}	
 			};
 		});
+
+		editor.on("blur", function(e) {
+			console.log("blurrr", self.props.fullScreen);
+			if (self.props.fullScreen) {
+				self.refs.editor.getDOMNode().className = "editor ace_editor ace-tm";
+				self.editor.resize();
+				self.props.exitFullScreen();
+				self.editor.focus();
+			}
+		})
 		this.setState({acePointer: editor});
 	}
 });

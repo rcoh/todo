@@ -285,22 +285,33 @@ var NoteEditor = React.createClass({
 	},
 
 	getInitialState: function() {
-		return {name: "", text: ""};
+		return {name: "", text: "", _fullScreen: false};
 	},
 
 	onTextUpdate: function(text) {
 		this.setState({text: text});
 	},
 
+	toggleFullscreen: function() {
+		this.setState({_fullScreen: true});
+	},
+
+	leaveFullscreen: function() {
+		this.setState({_fullScreen: false});
+	},
+
 	render: function() {
+		console.log("parent", this.state._fullScreen);
 		return <div>
 			<h4>
-			{this.state.name}
+			{this.state.name}|<span className="clickable" onClick={this.toggleFullscreen}>Fullscreen</span>
 			</h4>
-			<div className="editor-textarea">
-				<AceEditor onChange={this.onTextUpdate} startingText={this.state.text} />
+			<div className="editor-textarea" >
+				<AceEditor onChange={this.onTextUpdate} startingText={this.state.text} 
+				fullScreen={this.state._fullScreen}
+				exitFullScreen={this.leaveFullscreen}
+				/>
 			</div>
-	
 		</div>;
 	}
 });
