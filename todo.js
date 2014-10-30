@@ -112,13 +112,12 @@ var App = React.createClass({
 	},
 
 	render: function() {
-		return <AceEditor startingText="startstart"/>;
 		if (this.state.isLoggedIn) {
 			return <div className="container-fluid toplevel">
 				<div className="row">
 					<div className="notes-pane col-md-6">
 						<NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
-					</div> 
+					</div>
 					<div className="todo-pane col-md-6">
 						<TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
 					</div>
@@ -286,21 +285,22 @@ var NoteEditor = React.createClass({
 	},
 
 	getInitialState: function() {
-		return {name: "Loading...", text: "Loading..." };
+		return {name: "", text: ""};
 	},
 
-	onTextUpdate: function(event) {
-		this.setState({text: event.target.value});
+	onTextUpdate: function(text) {
+		this.setState({text: text});
 	},
 
 	render: function() {
 		return <div>
-			<div>
-			Note Name: {this.state.name}
+			<h4>
+			{this.state.name}
+			</h4>
+			<div className="editor-textarea">
+				<AceEditor onChange={this.onTextUpdate} startingText={this.state.text} />
 			</div>
-			<textarea className="editor-textarea" onChange={this.onTextUpdate} value={this.state.text}>
-		
-			</textarea>		
+	
 		</div>;
 	}
 });
