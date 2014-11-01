@@ -35,7 +35,7 @@ var AceEditor = React.createClass({
 	},
 
 	render: function() {	
-		return <div key="editoreditor" className="editor" ref="editor" onKeyDown={this.keyDown}></div>;
+		return <div key="editoreditor" className="editor" ref="editor"></div>;
 	},
 
 	componentDidMount: function() {
@@ -57,16 +57,22 @@ var AceEditor = React.createClass({
 				}	
 			};
 		});
-
-		editor.on("blur", function(e) {
-			console.log("blurrr", self.props.fullScreen);
-			if (self.props.fullScreen) {
-				self.refs.editor.getDOMNode().className = "editor ace_editor ace-tm";
-				self.editor.resize();
-				self.props.exitFullScreen();
-				self.editor.focus();
-			}
-		})
+		
+		editor.commands.addCommand({
+		    name: 'exitFullScreen',
+		    bindKey: {win: 'Ctrl+E',  mac: 'Ctrl+E'},
+		    exec: function(editor) {
+		        if (self.props.fullScreen) {
+					self.refs.editor.getDOMNode().className = "editor ace_editor ace-tm";
+					self.editor.resize();
+					self.props.exitFullScreen();
+					self.editor.focus();
+				}
+		    },
+		    readOnly: true // false if this command should not apply in readOnly mode
+		});
+		
 		this.setState({acePointer: editor});
+
 	}
 });
