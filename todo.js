@@ -140,8 +140,20 @@ var TodoPane = React.createClass({
 		this.setState({_todo: event.target.value});
 	},
 
+    parseTags: function(todoText) {
+        var tags = todoText.split(",");
+        return _.map(tags, function(tag){
+            return tag.trim();
+        });
+    },
+
 	addTodo: function() {
-		this.state.todos.push({done: false, text: this.state._todo});
+        var todoArray = this.parseTags(this.state._todo);
+		this.state.todos.push({
+            done: false,
+            text: todoArray.shift(), // Removes + returns first item of array
+            tags: todoArray
+        });
 		this.setState({todos: this.state.todos, _todo: ""});
 	},
 
@@ -179,10 +191,14 @@ var TodoPane = React.createClass({
 		var todoDivs = this.state.todos.map(function(todo, index) {
 			var className = todo.done ? "todo-done" : "";
 			var doneText = todo.done ? "Undone" : "Done";
-			return <div className="row">
-				<div key={index} className={className}>
-					<div className="col-md-1 clickable" onClick={self.crossOff(index)}>{doneText}</div>
-					<div className={className + " col-md-7"}>{todo.text}</div>
+            var tagsText = todo.tags? todo.tags.join(', ') : "";
+			return <div className="row" key={index}>
+				<div className={className}>
+					<div className={className + " col-md-5"}>
+                        <input type="checkbox" checked={todo.done} onClick={self.crossOff(index)}/>
+                        {todo.text}
+                    </div>
+                    <div className="col-md-3">{tagsText}</div>
 					<div className="col-md-1 clickable" onClick={self.remove(index)}>Remove</div>
 				</div>
 			</div>;
