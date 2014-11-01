@@ -189,20 +189,9 @@ var TodoPane = React.createClass({
 		//console.log("rendering todo.", this.state.todos.length);
 		var self = this;
 		var todoDivs = this.state.todos.map(function(todo, index) {
-			var className = todo.done ? "todo-done" : "";
-			var doneText = todo.done ? "Undone" : "Done";
-            var tagsText = todo.tags? todo.tags.join(', ') : "";
-			return <div className="row" key={index}>
-				<div className={className}>
-					<div className={className + " col-md-5"}>
-                        <input type="checkbox" checked={todo.done} onClick={self.crossOff(index)}/>
-                        {todo.text}
-                    </div>
-                    <div className="col-md-3">{tagsText}</div>
-					<div className="col-md-1 clickable" onClick={self.remove(index)}>Remove</div>
-				</div>
-			</div>;
-		});
+            return <TodoItem done={todo.done} text={todo.text} tags={todo.tags} index={index}
+                      crossOff={self.crossOff} remove={self.remove} key={index} /> 
+        });
 		return <div>
 			<input type="text" className="todo-input" placeholder="Todo?" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
 			<button onClick={this.addTodo} className="add-button btn btn-success">Add</button>
@@ -211,6 +200,34 @@ var TodoPane = React.createClass({
 			</div>
 		</div>;
 	}
+});
+
+var TodoItem = React.createClass({
+    propTypes: {
+        done: React.PropTypes.bool,
+        text: React.PropTypes.string,
+        tags: React.PropTypes.array,
+        index: React.PropTypes.number,
+        crossOff: React.PropTypes.func,
+        remove: React.PropTypes.func,
+    },
+
+    render: function() {
+        var className = this.props.done ? "todo-done" : "";
+        var doneText = this.props.done ? "Undone" : "Done";
+        var tagsText = this.props.tags? this.props.tags.join(', ') : "";
+        return <div className="row">
+            <div className={className}>
+                <div className={className + " col-md-5"}>
+                    <input type="checkbox" defaultChecked={this.props.done} onClick={this.props.crossOff(this.props.index)}/>
+                    {this.props.text}
+                </div>
+                <div className="col-md-3">{tagsText}</div>
+                <div className="col-md-1 clickable" onClick={this.props.remove(this.props.index)}>Remove</div>
+            </div>
+        </div>;
+
+    }
 });
 
 var NotesPane = React.createClass({
@@ -263,7 +280,6 @@ var NotesPane = React.createClass({
 			return !note.deleted;
 		});
 		
-		//debugger;
 		var notes = _.map(nonDeletedNotes, function(note, noteId) {
 			if (noteId == self.state._selectedNote) {
 				return <div key={"row" + noteId} className="row note-item note-selected">
