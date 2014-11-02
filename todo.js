@@ -6,6 +6,18 @@ var FireStateMixin = {
 	},
 
 	version: 0,
+    persistedVersion: -1,
+
+    getSyncState: function() {
+        if (this.version > this.persistedVersion) {
+            console.log(this.version, this.persistedVersion);
+            return "lagging";
+        } else if (this.version == this.persistedVersion) {
+            return "sync";
+        } else {
+            return "error";
+        }
+    },
 
 	getInitialState: function() { return {
 		hackToLetStateBeEmpty: true,
@@ -30,22 +42,8 @@ var FireStateMixin = {
     				var publics = publicVals(this.state);
     				console.warn("snapshut is null, what should I do?", publics);
     			}
-    			//self.replaceState(self.ensureAllValuesPresent(snapshotVal));
     		}
     	});
-    },
-
-    // DEAD CODE
-    ensureAllValuesPresent: function(stateSnapshot) {
-    	var privates = this.privateVals(this.state);
-    	var withInitial = React.addons.update(this.getInitialState(), {$merge: stateSnapshot});
-    	return React.addons.update(withInitial, {$merge: privates});
-    },
-
-    privateVals: function(state) {
-    	return _.pick(state, function(value, key) {
-    		return key.indexOf("_") == 0;
-    	});	
     },
 
     publicVals: function(state) {
@@ -78,6 +76,7 @@ var FireStateMixin = {
 			console.log("running a tx", currentState.version, newState.version);
 			if (newState.version > currentState.version) {
 				console.log("persisting", newState);
+                self.persistedVersion = newState.version;
 				return newState;
 			} else {
 				console.warn("Tried to update a stale version");
@@ -130,10 +129,10 @@ var App = React.createClass({
 });
 
 var TodoPane = React.createClass({
-	mixins: [FireStateMixin],
+    mixins: [React.addons.LinkedStateMixin, FireStateMixin],
 
 	getInitialState: function() {
-		return { todos: [], _todo: "" };
+		return { todos: [], _todo: "", _filter: "" };
 	},
 
 	todoChange: function(event) {
@@ -185,16 +184,28 @@ var TodoPane = React.createClass({
     	}
 	},
 
+    tagsMatch: function(tags, filter) {
+        return _.some(tags, function(tag) { return tag.indexOf(filter) == 0 });
+    },
+
 	render: function() {
 		//console.log("rendering todo.", this.state.todos.length);
 		var self = this;
-		var todoDivs = this.state.todos.map(function(todo, index) {
+        console.log(this.state.todos);
+        //debugger;
+        var matchingTodos = _.filter(this.state.todos, function(todo) {
+            //console.log(todo);
+            return todo && (self.state._filter == "" || self.tagsMatch(todo.tags, self.state._filter));
+        });
+
+		var todoDivs = matchingTodos.map(function(todo, index) {
             return <TodoItem done={todo.done} text={todo.text} tags={todo.tags} index={index}
                       crossOff={self.crossOff} remove={self.remove} key={index} /> 
         });
 		return <div>
 			<input type="text" className="todo-input" placeholder="Todo?" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
 			<button onClick={this.addTodo} className="add-button btn btn-success">Add</button>
+            <input type="text" className="todo-input filter" placeholder="tag-filter" valueLink={this.linkState('_filter')} />
 			<div>
 				{todoDivs}
 			</div>
@@ -219,8 +230,9 @@ var TodoItem = React.createClass({
         return <div className="row">
             <div className={className}>
                 <div className={className + " col-md-5"}>
-                    <input type="checkbox" defaultChecked={this.props.done} onClick={this.props.crossOff(this.props.index)}/>
-                    {this.props.text}
+                    <input type="checkbox" defaultChecked={this.props.done} 
+                        onClick={this.props.crossOff(this.props.index)}/>
+                    <span className="todo-text">{this.props.text}</span>
                 </div>
                 <div className="col-md-3">{tagsText}</div>
                 <div className="col-md-1 clickable" onClick={this.props.remove(this.props.index)}>Remove</div>
@@ -337,7 +349,7 @@ var NoteEditor = React.createClass({
 		return <div>
 			<h4>
 			{this.state.name}|<span className="clickable" onClick={this.toggleFullscreen}>Fullscreen</span>
-			</h4>
+			</h4>{this.getSyncState()}
 			<div className="editor-textarea" >
 				<AceEditor onChange={this.onTextUpdate} startingText={this.state.text} 
 				fullScreen={this.state._fullScreen}

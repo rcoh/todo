@@ -17,6 +17,15 @@
 	width: 50%;*/
 }
 
+.todo-text {
+    margin-left: 5px;
+}
+
+input[type=checkbox] {
+    position: relative;  
+    bottom: -2px;
+}
+
 .editor {
 	/*width: 500px;*/
 	height: 500px;
@@ -80,6 +89,10 @@
 .todo-input {
 	width: 100px;
 	height: 34px;
+}
+
+.filter {
+    margin-left: 15px;
 }
 
 .editor-textarea {
