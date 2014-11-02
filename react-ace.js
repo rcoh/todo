@@ -1,4 +1,6 @@
 /** @jsx React.DOM */
+
+var React = require('react');
 var AceEditor = React.createClass({
 	propTypes: {
 		onChange: React.PropTypes.func,
@@ -76,3 +78,5 @@ var AceEditor = React.createClass({
 
 	}
 });
+
+module.exports = AceEditor;

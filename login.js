@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-
+var React = require('react');
 var Login = React.createClass({
 	propTypes: {
 		onLogin: React.PropTypes.func.isRequired,
@@ -61,3 +61,5 @@ var Login = React.createClass({
 		</div>;
 	}
 });
+
+module.exports = Login;

@@ -1,4 +1,8 @@
 /** @jsx React.DOM */
+var React = require('react/addons');
+var Login = require('./login');
+var AceEditor = require('./react-ace');
+var _ = require("underscore");
 
 var FireStateMixin = {
 	propTypes: {
@@ -359,3 +363,5 @@ var NoteEditor = React.createClass({
 		</div>;
 	}
 });
+
+module.exports = App;

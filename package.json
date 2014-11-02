@@ -1,0 +1,24 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "description": "much todo",
+  "main": "main.js",
+  "dependencies": {
+    "reactify": "~0.15.2",
+    "underscore": "~1.7.0",
+    "react": "~0.12.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rcoh/todo.git"
+  },
+  "author": "Russell Cohen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rcoh/todo/issues"
+  }
+}
