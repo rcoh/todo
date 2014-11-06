@@ -85,9 +85,6 @@ var NotesPane = React.createClass({
 
 var NoteEditor = React.createClass({
     mixins: [FireStateMixin],
-    propTypes: {
-        noteId: React.PropTypes.string.isRequired
-    },
 
     getInitialState: function() {
         return {name: "", text: "", _fullScreen: false};

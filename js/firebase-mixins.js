@@ -1,6 +1,16 @@
 var React = require("react/addons");
 var _ = require("underscore");
 
+/*var FireArrayMixin = {
+    propTypes: {
+        firebasePointer: React.PropTypes.object.isRequired
+    },
+
+    addObj: function(obj) {
+        firebasePointer.
+    }
+}*/
+
 var FireStateMixin = {
     propTypes: {
         firebasePointer: React.PropTypes.object.isRequired,
@@ -10,14 +20,7 @@ var FireStateMixin = {
     persistedVersion: -1,
 
     getSyncState: function() {
-        if (this.version > this.persistedVersion) {
-            console.log(this.version, this.persistedVersion);
-            return "lagging";
-        } else if (this.version == this.persistedVersion) {
-            return "sync";
-        } else {
-            return "error";
-        }
+        return "TODO";
     },
 
     getInitialState: function() { return {

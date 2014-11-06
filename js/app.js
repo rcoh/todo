@@ -42,9 +42,10 @@ var App = React.createClass({
 
 var TodoPane = React.createClass({
     mixins: [React.addons.LinkedStateMixin, FireStateMixin],
+    readOnly: true,
 
     getInitialState: function() {
-        return { todos: [], _todo: "", _filter: "" };
+        return { todos: {}, _todo: "", _filter: "" };
     },
 
     todoChange: function(event) {
@@ -60,33 +61,29 @@ var TodoPane = React.createClass({
 
     addTodo: function() {
         var todoArray = this.parseTags(this.state._todo);
-        this.state.todos.push({
+        var newTodo = {
             done: false,
             text: todoArray.shift(), // Removes + returns first item of array
-            tags: todoArray
-        });
-        this.setState({todos: this.state.todos, _todo: ""});
-    },
-
-    crossOff: function(index) {
-        var self = this;
-        return function() {
-            var indexUpdate = {}
-            indexUpdate[index] = {done: {$apply: function(v) { return !v; }}};
-            var newState = React.addons.update(self.state, {todos: indexUpdate});
-            console.log(newState);
-            self.setState(newState);
+            tags: todoArray,
+            version: 1
         };
+        this.setState({_todo: ""});
+        var newTodoRef = this.props.firebasePointer.child("todos").push();
+        newTodoRef.set(newTodo);
+        this.incrementVersion();
     },
 
-    remove: function(index) {
+    remove: function(id) {
         var self = this;
         return function() {
-            var withItemRemoved = React.addons.update(self.state.todos, {$splice: [[index,1]]});
-            console.log("with item removed:", withItemRemoved);
+            //alert("hey")
+            //var withItemRemoved = React.addons.update(self.state.todos, {$splice: [[index,1]]});
+            //console.log("with item removed:", withItemRemoved);
             //self.state.todos.splice(index, 1);
             //self.forceUpdate();
-            self.setState({todos: withItemRemoved});
+            //self.setState({todos: withItemRemoved});
+            self.props.firebasePointer.child("todos").child(id).update({"deleted": true});
+            self.incrementVersion();
         };
     },
 
@@ -105,14 +102,14 @@ var TodoPane = React.createClass({
         var self = this;
         console.log(this.state.todos);
         //debugger;
-        var matchingTodos = _.filter(this.state.todos, function(todo) {
-            //console.log(todo);
-            return todo && (self.state._filter == "" || self.tagsMatch(todo.tags, self.state._filter));
+        var matchingTodos = _.pick(this.state.todos, function(todo) {
+            console.log(todo);
+            return !todo.deleted && (self.state._filter == "" || self.tagsMatch(todo.tags, self.state._filter));
         });
 
-        var todoDivs = matchingTodos.map(function(todo, index) {
-            return <TodoItem done={todo.done} text={todo.text} tags={todo.tags} index={index}
-                      crossOff={self.crossOff} remove={self.remove} key={index} /> 
+        var todoDivs = _.map(matchingTodos, function(todo, id) {
+            console.log(id)
+            return <TodoItem removeFunc={self.remove(id)} firebasePointer={self.props.firebasePointer.child("todos/" + id)} remove={self.remove} key={id} /> 
         });
         return <div>
             <input type="text" className="todo-input" placeholder="Todo?" value={this.state._todo} onChange={this.todoChange} onKeyDown={this.handleKeyDown} />
@@ -126,34 +123,40 @@ var TodoPane = React.createClass({
 });
 
 var TodoItem = React.createClass({
+    mixins: [FireStateMixin],
     propTypes: {
-        done: React.PropTypes.bool,
-        text: React.PropTypes.string,
-        tags: React.PropTypes.array,
-        index: React.PropTypes.number,
-        crossOff: React.PropTypes.func,
-        remove: React.PropTypes.func,
+        removeFunc: React.PropTypes.func.isRequired
+    },
+
+    getInitialState: function() {
+        return {
+            done: false,
+            tags: [],
+            text: ""
+        }
+    },
+
+    crossOff: function() {
+        this.setState({done: !this.state.done});
     },
 
     render: function() {
-        var className = this.props.done ? "todo-done" : "";
-        var doneText = this.props.done ? "Undone" : "Done";
-        var tagsText = this.props.tags? this.props.tags.join(', ') : "";
+        var className = this.state.done ? "todo-done" : "";
+        var doneText = this.state.done ? "Undone" : "Done";
+        var tagsText = this.state.tags? this.state.tags.join(', ') : "";
         return <div className="row">
             <div className={className}>
                 <div className={className + " col-md-5"}>
-                    <input type="checkbox" defaultChecked={this.props.done} 
-                        onClick={this.props.crossOff(this.props.index)}/>
-                    <span className="todo-text">{this.props.text}</span>
+                    <input type="checkbox" defaultChecked={this.state.done} 
+                        onClick={this.crossOff}/>
+                    <span className="todo-text">{this.state.text}</span>
                 </div>
                 <div className="col-md-3">{tagsText}</div>
-                <div className="col-md-1 clickable" onClick={this.props.remove(this.props.index)}>Remove</div>
+                <div className="col-md-1 clickable" onClick={this.props.removeFunc}>Remove</div>
             </div>
         </div>;
 
     }
 });
-
-
 
 module.exports = App;
