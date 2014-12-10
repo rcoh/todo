@@ -38,6 +38,20 @@ var Login = React.createClass({
 		});
 	},
 
+	signUp: function() {
+		var self = this;
+		this.props.firebasePointer.createUser({
+			email: this.state.email,
+			password: this.state.password
+		}, function(error) {
+			if (error === null) {
+				self.login();
+			} else {
+				self.setState({error: error.message});
+			}
+		})
+	},
+
 	doNothing: function(e) {
 		console.log(e)
 		e.preventDefault();
@@ -55,6 +69,7 @@ var Login = React.createClass({
 				    <input onChange={this.passwordChanged} type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
 				  </div>
 				  <button className="btn btn-default" onClick={this.login}>Login</button>
+				  <button className="btn btn-default" onClick={this.signUp}>Sign Up</button>
 				</form>
 				{this.state.error}
 		</div>;

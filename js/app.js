@@ -12,25 +12,29 @@ var App = React.createClass({
     },
 
     getInitialState: function() { 
+        var auth = this.props.firebasePointer.getAuth() 
         return {
-            isLoggedIn: this.props.firebasePointer.getAuth()
+            isLoggedIn: auth,
+            uid:  auth ? auth.uid : null
             // TODO: separate react component for login
         }
     },
 
     onLogin: function(authInfo) {
-        this.setState({isLoggedIn: true});
+        console.log(authInfo)
+        this.setState({isLoggedIn: true, uid: authInfo.uid});
     },
 
     render: function() {
+        console.log(this.state.uid);
         if (this.state.isLoggedIn) {
             return <div className="container-fluid toplevel">
                 <div className="row">
                     <div className="notes-pane col-md-6">
-                        <NotesPane firebasePointer={this.props.firebasePointer.child("notes-pane")} />
+                        <NotesPane firebasePointer={this.props.firebasePointer.child(this.state.uid).child("notes-pane")} />
                     </div>
                     <div className="todo-pane col-md-6">
-                        <TodoPane firebasePointer={this.props.firebasePointer.child("todo-pane")} />
+                        <TodoPane firebasePointer={this.props.firebasePointer.child(this.state.uid).child("todo-pane")} />
                     </div>
                 </div>
             </div>;
