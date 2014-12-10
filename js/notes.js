@@ -116,10 +116,11 @@ var NoteEditor = React.createClass({
 
     render: function() {
         console.log("parent", this.state._fullScreen);
+        // TODO: fix sync state {this.getSyncState()}
         return <div>
             <h4>
-            {this.state.name}|<span className="clickable" onClick={this.toggleFullscreen}>Fullscreen</span>
-            </h4>{this.getSyncState()}
+            {this.state.name} |<span className="clickable" onClick={this.toggleFullscreen}> Fullscreen</span>
+            </h4>
             <div className="editor-textarea" >
                 <AceEditor onChange={this.onTextUpdate} startingText={this.state.text} 
                 fullScreen={this.state._fullScreen}
