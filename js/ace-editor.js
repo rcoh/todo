@@ -59,6 +59,11 @@ var AceEditor = React.createClass({
 				}	
 			};
 		});
+
+		console.log("resetting the undo manager");
+		var undoManager = editor.getSession().getUndoManager();
+		undoManager.reset();
+		editor.getSession().setUndoManager(undoManager);
 		
 		editor.commands.addCommand({
 		    name: 'exitFullScreen',
