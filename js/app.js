@@ -152,7 +152,7 @@ var TodoItem = React.createClass({
             <div className={className}>
                 <div className={className + " col-md-5"}>
                     <input type="checkbox" checked={this.state.done} 
-                        onClick={this.crossOff}/>
+                        onChange={this.crossOff}/>
                     <span className="todo-text">{this.state.text}</span>
                 </div>
                 <div className="col-md-3">{tagsText}</div>
