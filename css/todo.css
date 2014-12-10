@@ -26,6 +26,10 @@ input[type=checkbox] {
     bottom: -2px;
 }
 
+.show-all {
+    margin-right: 5px;
+}
+
 .editor {
 	/*width: 500px;*/
 	height: 500px;

@@ -12,7 +12,9 @@ var NotesPane = React.createClass({
         return {
             notes: {},
             _selectedNote: null,
-            _title: ""
+            _title: "",
+            _showAll: false,
+            _filter: null
         };
     },
 
@@ -28,10 +30,10 @@ var NotesPane = React.createClass({
         this.incrementVersion();
     },
 
-    deleteNote: function() {
+    updateNoteStatus: function(deleted) {
         var index = this.state._selectedNote;
         this.setState({_selectedNote: null});
-        this.props.firebasePointer.child("notes").child(index).update({"deleted": true});
+        this.props.firebasePointer.child("notes").child(index).update({"deleted": deleted});
         this.incrementVersion();
     },
 
@@ -47,17 +49,24 @@ var NotesPane = React.createClass({
         this.setState({_title: event.target.value});
     },
 
+    toggleShowAll: function() {
+        this.setState({_showAll: !this.state._showAll});
+    },
+
     render: function() {
         var self = this;
-        var nonDeletedNotes = _.pick(this.state.notes, function(note, noteId) {
-            return !note.deleted;
+        var filteredNotes = _.pick(this.state.notes, function(note, noteId) {
+            return !note.deleted || self.state._showAll;
         });
-        
-        var notes = _.map(nonDeletedNotes, function(note, noteId) {
+        var deleteText = function(note) {
+            console.log(note);
+            return note.deleted ? "Undelete" : "Delete";
+        }        
+        var notes = _.map(filteredNotes, function(note, noteId) {
             if (noteId == self.state._selectedNote) {
                 return <div key={"row" + noteId} className="row note-item note-selected">
                     <div key={"point-" + noteId} className="col-md-8">{note.name}</div>
-                    <div className="note-delete col-md-4 clickable" onClick={self.deleteNote}>Delete</div>
+                    <div className="note-delete col-md-4 clickable" onClick={_.partial(self.updateNoteStatus, !note.deleted)}>{deleteText(note)}</div>
                 </div>;
             } else {
                 return <div key={"point-" + noteId} className="note-unselected note-item" onClick={self.selectNote(noteId)}>{note.name}</div>;
@@ -74,6 +83,9 @@ var NotesPane = React.createClass({
                     <div className="notes-list col-md-4">
                         <input type="text" placeholder="Title" className="note-title" value={this.state._title} onChange={this.titleChange} />
                         <button className="btn btn-success add-button" onClick={this.addNote}>Add</button>
+                        <div>
+                            <span className="show-all">Show All</span><input type="checkbox" checked={this.state._showAll} onChange={this.toggleShowAll}/>
+                        </div>
                         {notes}
                     </div>
                     <div className="note-edit col-md-8">
