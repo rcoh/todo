@@ -17,11 +17,12 @@ var FireStateMixin = {
     },
 
     version: 0,
-    persistedVersion: -1,
 
     getSyncState: function() {
         return "TODO";
     },
+
+
 
     getInitialState: function() { return {
         hackToLetStateBeEmpty: true,
@@ -80,7 +81,6 @@ var FireStateMixin = {
             console.log("running a tx", currentState.version, newState.version);
             if (newState.version > currentState.version) {
                 console.log("persisting", newState);
-                self.persistedVersion = newState.version;
                 return newState;
             } else {
                 console.warn("Tried to update a stale version");
