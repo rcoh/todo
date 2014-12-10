@@ -25,6 +25,11 @@ var App = React.createClass({
         this.setState({isLoggedIn: true, uid: authInfo.uid});
     },
 
+    logout: function() {
+        this.props.firebasePointer.unauth();
+        location.reload();
+    },
+
     render: function() {
         console.log(this.state.uid);
         if (this.state.isLoggedIn) {
@@ -33,8 +38,11 @@ var App = React.createClass({
                     <div className="notes-pane col-md-6">
                         <NotesPane firebasePointer={this.props.firebasePointer.child(this.state.uid).child("notes-pane")} />
                     </div>
-                    <div className="todo-pane col-md-6">
+                    <div className="todo-pane col-md-5">
                         <TodoPane firebasePointer={this.props.firebasePointer.child(this.state.uid).child("todo-pane")} />
+                    </div>
+                    <div className="logout col-md-1">
+                        <button className="btn btn-warning" onClick={this.logout}>Logout</button>
                     </div>
                 </div>
             </div>;
