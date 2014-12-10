@@ -8,7 +8,7 @@ A basic, ugly, and mostly functional todo app I created for myself after struggl
 * Users / login, etc.
 
 ## Using It ##
-An instance of this is hosted and maintained by me at https://glaring-fire-654.firebaseapp.com/. If a lot of people start using this for some strange reason I may ask for donations.
+An instance of this is hosted and maintained by me at https://glaring-fire-654.firebaseapp.com/. If a lot of people start using this for some strange reason I may ask for donations. I currently make no claims towards the durability of any data that you put in here (although I do use it myself, so that says something). 
 
 ## Developing ##
 To contribute, simply clone the repository, then run:
