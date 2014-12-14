@@ -13,6 +13,9 @@ An instance of this is hosted and maintained by me at https://glaring-fire-654.f
 ## Developing ##
 To contribute, simply clone the repository, then run:
 ```
+# First install node
+npm install -g browserify
+npm install -g watchify
 npm install
 rundev.sh
 ```
