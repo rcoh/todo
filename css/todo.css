@@ -108,3 +108,15 @@ input[type=checkbox] {
 	padding: 10px;
 }
 
+.datetag {
+    color: green;
+}
+
+.plusminus {
+    padding-right: 5px;
+    cursor: pointer; 
+}
+
+.plusminus:hover {
+    color: blue;
+}
