@@ -8,12 +8,11 @@ var FireStateMixin = {
     },
 
     version: 0,
+    inSync: false,
 
     getSyncState: function() {
-        return "TODO";
+        return self.inSync;
     },
-
-
 
     getInitialState: function() { return {
         hackToLetStateBeEmpty: true,
@@ -65,16 +64,20 @@ var FireStateMixin = {
         var stateToSerialize = this.publicVals(this.state);
         this.version += 1;
         var newState = React.addons.update(stateToSerialize, {version: {$set: this.version}});
-           var self = this;
-        console.log(newState.version, this.version);
+        var self = this;
         this.props.firebasePointer.transaction(function(currentState) {
-            console.log("running a tx", currentState.version, newState.version);
+            self.inSync = false;
             if (newState.version > currentState.version) {
-                console.log("persisting", newState);
                 return newState;
             } else {
                 console.warn("Tried to update a stale version");
                 return currentState;
+            }
+        }, function(err, commited) {
+            if (err == null) {
+                self.inSync = true;
+            } else {
+                self.inSync = "ERR";
             }
         });
 
