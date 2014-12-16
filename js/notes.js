@@ -40,7 +40,6 @@ var NotesPane = React.createClass({
     selectNote: function(noteId) {
         var self = this;
         return function() {
-            console.log("clicked");
             self.setState({_selectedNote: noteId});
         };
     },
@@ -59,7 +58,6 @@ var NotesPane = React.createClass({
             return !note.deleted || self.state._showAll;
         });
         var deleteText = function(note) {
-            console.log(note);
             return note.deleted ? "Undelete" : "Delete";
         }        
         var notes = _.map(filteredNotes, function(note, noteId) {
@@ -74,7 +72,6 @@ var NotesPane = React.createClass({
         });
         
         var noteId = this.state._selectedNote;
-        console.log("noteid: ", noteId);
         var selectedNote = noteId != null ? <NoteEditor key={noteId} noteId={noteId} 
             firebasePointer={this.props.firebasePointer.child("notes/" + noteId)} /> : <div></div>;
     
@@ -115,7 +112,6 @@ var NoteEditor = React.createClass({
     },
 
     render: function() {
-        console.log("parent", this.state._fullScreen);
         // TODO: fix sync state {this.getSyncState()}
         return <div>
             <h4>

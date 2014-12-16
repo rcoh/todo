@@ -5,6 +5,7 @@ var Login = require('./login');
 var NotesPane = require('./notes');
 var TodoPane = require('./todo');
 var FireStateMixin = require("./firebase-mixins");
+var log = require('./logging');
 
 
 var App = React.createClass({
@@ -22,7 +23,7 @@ var App = React.createClass({
     },
 
     onLogin: function(authInfo) {
-        console.log(authInfo)
+        log.info(authInfo)
         this.setState({isLoggedIn: true, uid: authInfo.uid});
     },
 
@@ -32,7 +33,6 @@ var App = React.createClass({
     },
 
     render: function() {
-        console.log(this.state.uid);
         if (this.state.isLoggedIn) {
             return <div className="container-fluid toplevel">
                 <div className="row">

@@ -1,4 +1,5 @@
 var React = require('react');
+var log = require('./logging');
 var Login = React.createClass({
 	propTypes: {
 		onLogin: React.PropTypes.func.isRequired,
@@ -29,10 +30,10 @@ var Login = React.createClass({
 		}, function(error, authData) {
 		  if (error === null) {
 		    // user authenticated with Firebase
-		    console.log("User ID: " + authData.uid + ", Provider: " + authData.provider);
+		    log.info("User ID: " + authData.uid + ", Provider: " + authData.provider);
 		    self.props.onLogin(authData);
 		  } else {
-		    console.log("Error authenticating user:", error);
+		    log.info("Error authenticating user:", error);
 		    self.setState({error: error.message});
 		  }
 		});
@@ -53,7 +54,6 @@ var Login = React.createClass({
 	},
 
 	doNothing: function(e) {
-		console.log(e)
 		e.preventDefault();
 	},
 

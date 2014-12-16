@@ -1,15 +1,6 @@
 var React = require("react/addons");
 var _ = require("underscore");
-
-/*var FireArrayMixin = {
-    propTypes: {
-        firebasePointer: React.PropTypes.object.isRequired
-    },
-
-    addObj: function(obj) {
-        firebasePointer.
-    }
-}*/
+var log = require("./logging");
 
 var FireStateMixin = {
     propTypes: {
@@ -33,19 +24,19 @@ var FireStateMixin = {
         this.props.firebasePointer.on("value", function(snapshot) {
             var snapshotVal = snapshot.val();
             if (snapshotVal == null) {
-                console.warn("Null version: ", self);
+                log.warn("Null version: ", self);
                 return
             }
             var snapshotVersion = snapshotVal.version;
             delete snapshotVal.version;
             if (self.isMounted() && snapshotVersion > self.version) {
-                console.log("updating version: ", snapshotVersion);
+                log.info("updating version: ", snapshotVersion);
                 self.version = snapshotVersion;
                 self.needsPersist = false;
                 self.setState(snapshotVal);
                 if (snapshotVal == null) {
                     var publics = publicVals(this.state);
-                    console.warn("snapshut is null, what should I do?", publics);
+                    log.warn("snapshut is null, what should I do?", publics);
                 }
             }
         });
@@ -60,12 +51,11 @@ var FireStateMixin = {
     componentDidUpdate: function(prevProps, prevState) {
 
         if (_.isEqual(prevState, this.state)) {
-            console.log("states equal");
+            log.debug("states equal");
             return;
         }
 
         if (this.readOnly) {
-            console.log("read only")
             return;
         }
         if (!this.needsPersist) {

@@ -3,6 +3,7 @@ var FireStateMixin = require("./firebase-mixins");
 var _ = require("underscore");
 var moment = require('moment');
 var microdate = require('./micro-date');
+var log = require('./logging');
 
 var TodoPane = React.createClass({
     mixins: [React.addons.LinkedStateMixin, FireStateMixin],
@@ -29,7 +30,6 @@ var TodoPane = React.createClass({
         _.forEach(tags, function(tag){
             var trimmed = tag.trim();
             var dateOfTag = microdate.parseNL(trimmed);
-            console.log(dateOfTag);
             if (dateOfTag) {
                ret.dateStr = trimmed;
                ret.dateMoment = dateOfTag;
