@@ -114,9 +114,12 @@ input[type=checkbox] {
 
 .plusminus {
     padding-right: 5px;
-    cursor: pointer; 
+    cursor: pointer;
+    top: 0px;
+    font-size: 14px;
+    position: relative;
 }
 
-.plusminus:hover {
+.todo-header:hover {
     color: blue;
 }

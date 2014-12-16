@@ -125,12 +125,15 @@ var TodoPane = React.createClass({
                 });
 
                 // TODO: replace with icons
-                var plusMinus = minimized ? "+" : "-";
+                var plusMinus = minimized ? "plus" : "minus";
+                var glyph = "glyphicon glyphicon-" + plusMinus + "-sign plusminus";
 
                 return <div key={key} className="row">
                     <h4>
-                        <span className="plusminus" onClick={_.partial(self.toggleMinimized, key)}>{plusMinus}</span>
-                        {text}
+                        <span className="todo-header" onClick={_.partial(self.toggleMinimized, key)}>
+                            <span className={glyph} aria-hidden="true"></span>
+                            {text}
+                        </span>
                     </h4>
                     {todoDivs}
                 </div>;
